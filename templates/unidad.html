@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Unidades — ECORuta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos_ecoruta.css') }}">
+</head>
+<body>
+
+    <header class="encabezado">
+        <nav class="menu">
+            <h2>🚛 ECORuta</h2>
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/unidad">Unidades</a></li>
+                <li><a href="/comunidades">Comunidades</a></li>
+                <li><a href="/enviar_queja">Quejas</a></li>
+                <li><a href="/logout" style="color:#ffcdd2;" onclick="return confirm('¿Cerrar sesión?')">🚪 Salir</a></li>
+            </ul>
+        </nav>
+        <section class="hero">
+            <h1>🚛 Lista de Camiones</h1>
+            <p>El ayuntamiento cuenta con <strong>12 camiones</strong> recolectores.</p>
+        </section>
+    </header>
+
+    <main>
+
+        {% if rol == 'admin' %}
+        <section class="seccion">
+            <a href="/agregar_unidad" class="boton-principal">➕ Agregar nueva unidad</a>
+            &nbsp;&nbsp;
+            <a href="/buscar_unidad" class="boton-secundario">🔍 Buscar unidad</a>
+        </section>
+        {% else %}
+        <section class="seccion">
+            <a href="/buscar_unidad" class="boton-secundario">🔍 Buscar unidad</a>
+        </section>
+        {% endif %}
+
+        <section class="tarjetas-contenedor">
+            <h2>Unidades registradas</h2>
+
+            {% if unidades %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>No. Unidad</th>
+                        <th>Placa</th>
+                        <th>Vigencia</th>
+                        <th>Operador</th>
+                        <th>Comunidad</th>
+                        <th>Estado</th>
+                        {% if rol == 'admin' %}<th>Acciones</th>{% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for unidad in unidades %}
+                    <tr>
+                        <td>{{ unidad["_id"] }}</td>
+                        <td>{{ unidad["numero_unidad"] }}</td>
+                        <td>{{ unidad["numero_placa"] }}</td>
+                        <td>{{ unidad["vigencia_placa"] }}</td>
+                        <td>{{ unidad["operador_id"] }}</td>
+                        <td>{{ unidad["comunidad"] }}</td>
+                        <td>
+                            {% if unidad["estado"] == "en_servicio" %}
+                                <span style="color:green; font-weight:bold;">✅ En servicio</span>
+                            {% elif unidad["estado"] == "mantenimiento" %}
+                                <span style="color:orange; font-weight:bold;">🔧 Mantenimiento</span>
+                            {% else %}
+                                <span style="color:red; font-weight:bold;">❌ Fuera de servicio</span>
+                            {% endif %}
+                        </td>
+                        {% if rol == 'admin' %}
+                        <td>
+                            <a href="/editar_unidad/{{ unidad['_id'] }}" class="boton-principal" style="padding:6px 14px; font-size:13px;">✏️ Editar</a>
+                            <a href="/eliminar_unidad/{{ unidad['_id'] }}" onclick="return confirm('¿Eliminar esta unidad?')" class="boton-secundario" style="padding:6px 14px; font-size:13px;">🗑️ Eliminar</a>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p>No hay unidades registradas aún.</p>
+            {% endif %}
+
+            <br>
+            <a href="/" class="boton-principal">← Volver al inicio</a>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>🚛 ECORuta | San José del Rincón — 2026</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Editar Operador</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/estilos_ecoruta.css') }}">
+
+</head>
+
+
+
+<body>
+
+
+<section class="tarjetas-contenedor">
+
+
+<h1>✏️ Editar Operador</h1>
+
+
+
+<form method="POST">
+
+
+
+<input type="text"
+name="nombre"
+value="{{ operador.nombre }}"
+placeholder="Nombre"
+required>
+
+
+
+<br><br>
+
+
+
+<input type="text"
+name="telefono"
+value="{{ operador.telefono }}"
+placeholder="Teléfono"
+required>
+
+
+
+<br><br>
+
+
+
+<input type="text"
+name="unidad_asignada"
+value="{{ operador.unidad_asignada }}"
+placeholder="Unidad"
+required>
+
+
+
+<br><br>
+
+
+
+<input type="email"
+name="correo"
+value="{{ operador.correo }}"
+placeholder="Correo"
+required>
+
+
+
+<br><br>
+
+
+
+<select name="estatus">
+
+
+<option value="activo"
+{% if operador.estatus=="activo" %}
+selected
+{% endif %}>
+
+Activo
+
+</option>
+
+
+
+<option value="inactivo"
+{% if operador.estatus=="inactivo" %}
+selected
+{% endif %}>
+
+Inactivo
+
+</option>
+
+
+</select>
+
+
+
+<br><br>
+
+
+
+<button class="boton-principal">
+
+Guardar cambios
+
+</button>
+
+
+
+</form>
+
+
+
+</section>
+
+
+</body>
+
+</html>

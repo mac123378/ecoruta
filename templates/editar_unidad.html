@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Unidad — ECORuta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos_ecoruta.css') }}">
+</head>
+<body>
+
+    <header class="encabezado">
+        <nav class="menu">
+            <h2>🚛 ECORuta</h2>
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/unidad">Unidades</a></li>
+                <li><a href="/comunidades">Comunidades</a></li>
+                <li><a href="/enviar_queja">Quejas</a></li>
+            </ul>
+        </nav>
+
+        <section class="hero">
+            <h1>✏️ Editar Unidad</h1>
+            <p>Actualiza la información de la unidad.</p>
+        </section>
+    </header>
+
+    <main>
+        <section class="seccion">
+
+            <div class="form-container">
+                <h2>Editar unidad</h2>
+
+                <!-- ✅ CORRECCIÓN IMPORTANTE: usar _id -->
+                <form action="{{ url_for('editar_unidad', id=unidad['_id']) }}" method="POST">
+
+                    <div class="form-group">
+                        <label>Número de unidad:</label>
+                        <input type="number"
+                               name="numero_unidad"
+                               value="{{ unidad.numero_unidad }}"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Número de placa:</label>
+                        <input type="text"
+                               name="numero_placa"
+                               value="{{ unidad.numero_placa }}"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Vigencia de placa:</label>
+                        <input type="date"
+                               name="vigencia_placa"
+                               value="{{ unidad.vigencia_placa }}"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>ID Operador:</label>
+                        <input type="text"
+                               name="operador_id"
+                               value="{{ unidad.operador_id }}"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Comunidad:</label>
+                        <input type="text"
+                               name="comunidad"
+                               value="{{ unidad.comunidad }}"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Estado:</label>
+                        <select name="estado" required>
+
+                            <option value="en_servicio"
+                                {% if unidad.estado == 'en_servicio' %}selected{% endif %}>
+                                En servicio
+                            </option>
+
+                            <option value="mantenimiento"
+                                {% if unidad.estado == 'mantenimiento' %}selected{% endif %}>
+                                Mantenimiento
+                            </option>
+
+                            <option value="fuera_servicio"
+                                {% if unidad.estado == 'fuera_servicio' %}selected{% endif %}>
+                                Fuera de servicio
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <button type="submit" class="form-btn">
+                        💾 Actualizar unidad
+                    </button>
+
+                </form>
+
+                <br>
+                <a href="/unidad" class="boton-secundario">← Volver</a>
+
+            </div>
+
+        </section>
+    </main>
+
+    <footer>
+        <p>🚛 ECORuta | San José del Rincón — 2026</p>
+    </footer>
+
+</body>
+</html>

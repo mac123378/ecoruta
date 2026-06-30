@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Agregar Ruta - ECORuta</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial;
+    background:#e8f5e9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+
+.contenedor{
+
+    background:white;
+    width:400px;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 0 20px #aaa;
+
+}
+
+
+h1{
+
+    text-align:center;
+    color:#1b5e20;
+
+}
+
+
+input,select{
+
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:10px;
+    border:1px solid #ccc;
+
+}
+
+
+button{
+
+    width:100%;
+    padding:12px;
+    background:#1b5e20;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+
+}
+
+
+button:hover{
+
+background:#2e7d32;
+
+}
+
+
+a{
+
+display:block;
+text-align:center;
+margin-top:15px;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="contenedor">
+
+
+<h1>🚌 Agregar Ruta</h1>
+
+
+<form action="/agregar_ruta" method="POST">
+
+
+<input 
+type="text"
+name="nombre"
+placeholder="Nombre de la ruta"
+required>
+
+
+<input 
+type="text"
+name="origen"
+placeholder="Lugar de salida"
+required>
+
+
+<input 
+type="text"
+name="destino"
+placeholder="Destino"
+required>
+
+
+<input 
+type="text"
+name="distancia"
+placeholder="Distancia KM"
+required>
+
+
+
+<button type="submit">
+
+Guardar Ruta
+
+</button>
+
+
+</form>
+
+
+<a href="/">Volver inicio</a>
+
+
+</div>
+
+
+</body>
+</html>

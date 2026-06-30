@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Unidad — ECORuta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos_ecoruta.css') }}">
+</head>
+<body>
+
+    <header class="encabezado">
+        <nav class="menu">
+            <h2>🚛 ECORuta</h2>
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/unidad">Unidades</a></li>
+                <li><a href="/comunidades">Comunidades</a></li>
+                <li><a href="/enviar_queja">Quejas</a></li>
+            </ul>
+        </nav>
+        <section class="hero">
+            <h1>🚛 Agregar Unidad</h1>
+            <p>Registra un nuevo camión recolector en el sistema.</p>
+        </section>
+    </header>
+
+    <main>
+        <section class="seccion">
+
+            <div class="form-container">
+                <h2>Nueva unidad</h2>
+
+                <form action="/agregar_unidad" method="POST">
+                    <div class="form-group">
+                        <label>Número de unidad:</label>
+                        <input type="number" name="numero_unidad" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Número de placa:</label>
+                        <input type="text" name="numero_placa" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Vigencia de placa:</label>
+                        <input type="date" name="vigencia_placa" required>
+                    </div>
+                    <div class="form-group">
+                        <label>ID Operador:</label>
+                        <input type="text" name="operador_id" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Comunidad:</label>
+                        <input type="text" name="comunidad" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Estado:</label>
+                        <select name="estado" required>
+                            <option value="en_servicio">En servicio</option>
+                            <option value="mantenimiento">Mantenimiento</option>
+                            <option value="fuera_servicio">Fuera de servicio</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="form-btn">
+                        💾 Guardar unidad
+                    </button>
+                </form>
+
+                <br>
+                <a href="/unidad" class="boton-secundario">← Volver</a>
+            </div>
+
+        </section>
+    </main>
+
+    <footer>
+        <p>🚛 ECORuta | San José del Rincón — 2026</p>
+    </footer>
+
+</body>
+</html>

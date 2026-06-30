@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Ruta — ECORuta</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos_ecoruta.css') }}">
+</head>
+
+<body>
+
+<header class="encabezado">
+
+    <nav class="menu">
+        <h2>🚛 ECORuta</h2>
+        <ul>
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/unidad">Unidades</a></li>
+            <li><a href="/comunidades">Comunidades</a></li>
+            <li><a href="/ver_rutas">Rutas</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <h1>✏️ Editar Ruta</h1>
+        <p>Modifica la información de la ruta seleccionada</p>
+    </section>
+
+</header>
+
+<main>
+
+<section class="seccion">
+
+    <div class="form-container">
+
+        <h2>Editar Ruta</h2>
+
+        <!-- 🔥 FORMULARIO -->
+        <form method="POST"
+              action="/editar_ruta/{{ comunidad_id }}/{{ ruta_index }}">
+
+            <div class="form-group">
+
+                <label>Nombre de la ruta:</label>
+
+                <input type="text"
+                       name="nombre_ruta"
+                       value="{{ ruta.nombre }}"
+                       required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Horario:</label>
+
+                <input type="time"
+                       name="horario"
+                       value="{{ ruta.horario }}"
+                       required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Días de recolección:</label>
+
+                <input type="text"
+                       name="dias"
+                       value="{{ ruta.dias }}"
+                       placeholder="Ej: Lunes, Miércoles, Viernes"
+                       required>
+
+            </div>
+
+            <button type="submit" class="form-btn">
+                💾 Guardar cambios
+            </button>
+
+        </form>
+
+        <br>
+
+        <a href="/ver_comunidades_lista" class="boton-secundario">
+            ← Volver
+        </a>
+
+    </div>
+
+</section>
+
+</main>
+
+<footer>
+
+    <p>🚛 ECORuta | San José del Rincón — 2026</p>
+
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Buscar Unidad — ECORuta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos_ecoruta.css') }}">
+</head>
+<body>
+
+    <header class="encabezado">
+        <nav class="menu">
+            <h2>🚛 ECORuta</h2>
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/unidad">Unidades</a></li>
+                <li><a href="/comunidades">Comunidades</a></li>
+                <li><a href="/enviar_queja">Quejas</a></li>
+            </ul>
+        </nav>
+        <section class="hero">
+            <h1>🔍 Buscar Unidad</h1>
+            <p>El ayuntamiento cuenta con <strong>12 camiones</strong> recolectores.</p>
+        </section>
+    </header>
+
+    <main>
+
+        <section class="seccion">
+            <h2>Buscar camión</h2>
+
+            <form action="/buscar_unidad" method="POST">
+                <div class="form-group">
+                    <label>Buscar por:</label>
+                    <select name="campo" required>
+                        <option value="_id">ID</option>
+                        <option value="numero_unidad">Número de unidad</option>
+                        <option value="numero_placa">Número de placa</option>
+                        <option value="vigencia_placa">Vigencia de placa</option>
+                        <option value="operador_id">ID Operador</option>
+                        <option value="comunidad">Comunidad</option>
+                        <option value="estado">Estado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Valor a buscar:</label>
+                    <input type="text" name="valor"
+                           placeholder="Escribe el dato a buscar" required>
+                </div>
+                <button type="submit" class="boton-secundario">
+                    🔍 Buscar
+                </button>
+            </form>
+        </section>
+
+        {% if mensaje %}
+            <div style="background:#ffe0e0; color:red; padding:15px;
+                        margin:10px 20px; border-radius:8px; font-weight:bold;">
+                ⚠️ {{ mensaje }}
+            </div>
+        {% endif %}
+
+        {% if resultados %}
+        <section class="tarjetas-contenedor">
+            <h2>Resultados encontrados</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>No. Unidad</th>
+                        <th>Placa</th>
+                        <th>Vigencia</th>
+                        <th>Operador</th>
+                        <th>Comunidad</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for unidad in resultados %}
+                    <tr>
+                        <td>{{ unidad["_id"] }}</td>
+                        <td>{{ unidad["numero_unidad"] }}</td>
+                        <td>{{ unidad["numero_placa"] }}</td>
+                        <td>{{ unidad["vigencia_placa"] }}</td>
+                        <td>{{ unidad["operador_id"] }}</td>
+                        <td>{{ unidad["comunidad"] }}</td>
+                        <td>{{ unidad["estado"] }}</td>
+                        <td>
+                            <a href="/editar_unidad/{{ unidad['_id'] }}"
+                               class="boton-principal"
+                               style="padding:6px 14px; font-size:13px;">
+                               ✏️ Editar
+                            </a>
+                            <a href="/eliminar_unidad/{{ unidad['_id'] }}"
+                               onclick="return confirm('¿Eliminar esta unidad?')"
+                               class="boton-secundario"
+                               style="padding:6px 14px; font-size:13px;">
+                               🗑️ Eliminar
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <br>
+            <a href="/unidad" class="boton-principal">Ver todas las unidades</a>
+        </section>
+        {% endif %}
+
+        <section class="seccion" style="text-align:center;">
+            <a href="/" class="boton-secundario">← Volver al inicio</a>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>🚛 ECORuta | San José del Rincón — 2026</p>
+    </footer>
+
+</body>
+</html>

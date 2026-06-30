@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Operadores — ECORuta</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos_ecoruta.css') }}">
+</head>
+
+<body>
+
+<header class="encabezado">
+
+    <nav class="menu">
+
+        <h2>🚛 ECORuta</h2>
+
+        <ul>
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/unidad">Unidades</a></li>
+            <li><a href="/agregar_operador">Operadores</a></li>
+            <li><a href="/comunidades">Comunidades</a></li>
+            <li><a href="/enviar_queja">Quejas</a></li>
+        </ul>
+
+    </nav>
+
+
+    <section class="hero">
+
+        <h1>👷 Lista de Operadores</h1>
+
+        <p>
+            Consulta todos los conductores registrados en el sistema.
+        </p>
+
+    </section>
+
+</header>
+
+
+
+<main>
+
+<section class="tarjetas-contenedor">
+
+
+<h2>Operadores registrados</h2>
+
+
+{% if operadores %}
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>Nombre</th>
+
+<th>Teléfono</th>
+
+<th>Unidad asignada</th>
+
+<th>Correo</th>
+
+<th>Estatus</th>
+
+<th>Acción</th>
+
+</tr>
+
+</thead>
+
+
+
+<tbody>
+
+
+{% for op in operadores %}
+
+
+<tr>
+
+
+<td>{{ op.nombre }}</td>
+
+
+<td>{{ op.telefono }}</td>
+
+
+<td>{{ op.unidad_asignada }}</td>
+
+
+<td>{{ op.correo }}</td>
+
+
+
+<td>
+
+
+{% if op.estatus == "activo" %}
+
+
+<span style="color:green;font-weight:bold;">
+
+✅ Activo
+
+</span>
+
+
+{% else %}
+
+
+<span style="color:gray;font-weight:bold;">
+
+⏸️ Inactivo
+
+</span>
+
+
+{% endif %}
+
+
+</td>
+
+
+
+
+<td>
+
+
+<!-- BOTÓN EDITAR -->
+
+<a href="/editar_operador/{{ op._id }}"
+class="boton-principal"
+style="padding:6px 14px;font-size:13px;">
+
+✏️ Editar
+
+</a>
+
+
+
+<!-- BOTÓN ELIMINAR -->
+
+
+<a href="/eliminar_operador/{{ op._id }}"
+
+onclick="return confirm('¿Eliminar este operador?')"
+
+class="boton-secundario"
+
+style="padding:6px 14px;font-size:13px;">
+
+🗑️ Eliminar
+
+</a>
+
+
+</td>
+
+
+
+</tr>
+
+
+{% endfor %}
+
+
+</tbody>
+
+
+</table>
+
+
+{% else %}
+
+
+<p>
+No hay operadores registrados aún.
+</p>
+
+
+{% endif %}
+
+
+
+<br>
+
+
+<a href="/agregar_operador"
+class="boton-principal">
+
+➕ Agregar nuevo operador
+
+</a>
+
+
+&nbsp;&nbsp;
+
+
+<a href="/"
+class="boton-secundario">
+
+← Volver al inicio
+
+</a>
+
+
+
+</section>
+
+
+</main>
+
+
+
+<footer>
+
+<p>
+🚛 ECORuta | San José del Rincón — 2026
+</p>
+
+</footer>
+
+
+
+</body>
+
+</html>

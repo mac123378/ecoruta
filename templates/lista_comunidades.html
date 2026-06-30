@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Comunidades Registradas - ECORuta</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos_ecoruta.css') }}">
+
+</head>
+
+<body>
+
+<header class="encabezado">
+
+    <nav class="menu">
+
+        <h2>🚛 ECORuta</h2>
+
+        <ul>
+
+            <li><a href="/">Inicio</a></li>
+
+            {% if rol=="admin" or rol=="operador" %}
+            <li><a href="/comunidades">Agregar comunidad</a></li>
+            {% endif %}
+
+        </ul>
+
+    </nav>
+
+    <section class="hero">
+
+        <h1>📋 Comunidades Registradas</h1>
+
+        <p>
+
+            Administra las comunidades registradas.
+
+        </p>
+
+    </section>
+
+</header>
+
+<main>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+
+{% for categoria,mensaje in messages %}
+
+<div style="background:#e8f5e9;
+            color:#2e7d32;
+            padding:15px;
+            margin:20px;
+            border-radius:8px;
+            font-weight:bold;">
+
+{{ mensaje }}
+
+</div>
+
+{% endfor %}
+
+{% endif %}
+{% endwith %}
+
+{% if comunidades %}
+
+{% for comunidad in comunidades %}
+
+<div style="background:white;
+            margin:20px;
+            padding:20px;
+            border-radius:12px;
+            box-shadow:0 3px 8px rgba(0,0,0,.15);">
+
+<h2>{{ comunidad.nombre }}</h2>
+
+<p>
+
+<b>📍 Ubicación:</b>
+
+{{ comunidad.ubicacion }}
+
+</p>
+
+<p>
+
+<b>👥 Habitantes:</b>
+
+{{ comunidad.habitantes }}
+
+</p>
+
+<p>
+
+<b>🏡 Tipo:</b>
+
+{{ comunidad.tipo }}
+
+</p>
+
+{% if rol=="admin" or rol=="operador" %}
+
+<div style="margin-top:15px;">
+
+<a href="{{ url_for('editar_comunidad', id=comunidad._id) }}">
+
+<button class="boton-principal">
+
+✏️ Editar Comunidad
+
+</button>
+
+</a>
+
+<a href="{{ url_for('eliminar_comunidad', id=comunidad._id) }}"
+onclick="return confirm('¿Seguro que deseas eliminar esta comunidad?');">
+
+<button class="boton-secundario">
+
+🗑 Eliminar Comunidad
+
+</button>
+
+</a>
+
+</div>
+
+{% endif %}
+
+<hr>
+
+<h3>🚛 Rutas</h3>
+
+{% if comunidad.rutas %}
+
+{% for ruta in comunidad.rutas %}
+
+<div style="border:1px solid #ccc;
+            padding:15px;
+            margin-top:10px;
+            border-radius:8px;">
+
+<p>
+
+<b>Nombre:</b>
+
+{{ ruta.nombre }}
+
+</p>
+
+<p>
+
+<b>Horario:</b>
+
+{{ ruta.horario }}
+
+</p>
+
+<p>
+
+<b>Días:</b>
+
+{{ ruta.dias }}
+
+</p>
+
+{% if rol=="admin" or rol=="operador" %}
+
+<form method="POST"
+action="{{ url_for('editar_ruta',
+comunidad_id=comunidad._id,
+ruta_index=loop.index0) }}">
+
+<input
+type="text"
+name="nombre_ruta"
+value="{{ ruta.nombre }}"
+required>
+
+<input
+type="time"
+name="horario"
+value="{{ ruta.horario }}"
+required>
+
+<input
+type="text"
+name="dias"
+value="{{ ruta.dias }}"
+required>
+
+<button type="submit">
+
+Guardar Cambios
+
+</button>
+
+</form>
+
+{% endif %}
+
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<p>No hay rutas registradas.</p>
+
+{% endif %}
+
+</div>
+{% endfor %}
+
+{% else %}
+
+<h2 style="text-align:center;margin-top:40px;">
+
+No hay comunidades registradas.
+
+</h2>
+
+{% endif %}
+
+<div style="text-align:center;margin:40px;">
+
+{% if rol=="admin" or rol=="operador" %}
+
+<a href="/comunidades">
+
+<button class="boton-principal">
+
+➕ Agregar otra comunidad
+
+</button>
+
+</a>
+
+&nbsp;&nbsp;
+
+{% endif %}
+
+<a href="/">
+
+<button class="boton-secundario">
+
+🏠 Volver al inicio
+
+</button>
+
+</a>
+
+</div>
+
+</main>
+
+<footer>
+
+<p>
+
+🚛 ECORuta | San José del Rincón — 2026
+
+</p>
+
+</footer>
+
+</body>
+
+</html>

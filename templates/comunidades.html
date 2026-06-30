@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Comunidades — ECORuta</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos_ecoruta.css') }}">
+
+</head>
+
+<body>
+
+<header class="encabezado">
+
+    <nav class="menu">
+
+        <h2>🚛 ECORuta</h2>
+
+        <ul>
+
+            <li><a href="/">Inicio</a></li>
+
+            {% if rol=="admin" or rol=="operador" %}
+            <li><a href="/unidad">Unidades</a></li>
+            <li><a href="/agregar_operador">Operadores</a></li>
+            {% endif %}
+
+            <li><a href="/comunidades">Comunidades</a></li>
+            <li><a href="/enviar_queja">Quejas</a></li>
+
+        </ul>
+
+    </nav>
+
+    <section class="hero">
+
+        <h1>🌱 Comunidades</h1>
+
+        <p>
+
+            Gestiona las zonas donde operan las rutas de recolección.
+
+        </p>
+
+    </section>
+
+</header>
+
+<main>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+
+{% for categoria,mensaje in messages %}
+
+<div style="background:#e8f5e9;
+            color:#2e7d32;
+            padding:15px;
+            margin:20px;
+            border-radius:8px;
+            font-weight:bold;">
+
+{{ mensaje }}
+
+</div>
+
+{% endfor %}
+
+{% endif %}
+{% endwith %}
+
+<section class="seccion">
+
+{% if rol=="admin" or rol=="operador" %}
+
+<h2>Agregar comunidad</h2>
+
+<form action="/agregar_comunidad" method="POST">
+
+<div class="form-group">
+
+<label>
+
+Nombre de la comunidad:
+
+</label>
+
+<input
+type="text"
+name="nombre"
+placeholder="Nombre de la comunidad"
+required>
+
+</div>
+
+<div class="form-group">
+
+<label>
+
+Ubicación:
+
+</label>
+
+<input
+type="text"
+name="ubicacion"
+placeholder="Ubicación"
+required>
+
+</div>
+
+<div class="form-group">
+
+<label>
+
+Número de habitantes:
+
+</label>
+
+<input
+type="number"
+name="habitantes"
+placeholder="Número de habitantes"
+required>
+
+</div>
+
+<div class="form-group">
+
+<label>
+
+Tipo:
+
+</label>
+
+<select name="tipo">
+
+<option value="urbana">
+
+Urbana
+
+</option>
+
+<option value="rural">
+
+Rural
+
+</option>
+
+</select>
+
+</div>
+
+<button
+type="submit"
+class="boton-secundario">
+
+💾 Guardar comunidad
+
+</button>
+
+</form>
+
+<br><br>
+
+{% endif %}
+
+<div style="display:flex;
+justify-content:center;
+gap:20px;
+flex-wrap:wrap;">
+
+<a
+href="/ver_comunidades_lista"
+class="boton-principal">
+
+📋 Ver comunidades registradas
+
+</a>
+
+<a
+href="/"
+class="boton-secundario">
+
+🏠 Volver al inicio
+
+</a>
+
+</div>
+
+</section>
+
+</main>
+
+<footer>
+
+<p>
+
+🚛 ECORuta | San José del Rincón — 2026
+
+</p>
+
+</footer>
+
+</body>
+
+</html>

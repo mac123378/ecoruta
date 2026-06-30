@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>ECORuta — Sistema de Recolección</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos_ecoruta.css') }}">
+    <style>
+        .bienvenida-badge {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 30px;
+            padding: 6px 16px;
+            font-size: 14px;
+            color: #fff;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="encabezado">
+        <nav class="menu">
+            <h2>🚛 ECORuta</h2>
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                {% if rol in ['admin', 'operador'] %}
+                <li><a href="/unidad">Unidades</a></li>
+                <li><a href="/agregar_operador">Operadores</a></li>
+                {% endif %}
+                <li><a href="/comunidades">Comunidades</a></li>
+                <li><a href="/enviar_queja">Quejas</a></li>
+                <li><a href="/ver_rutas">Ver Rutas</a></li>
+                <li>
+                    <span class="bienvenida-badge">
+                        👋 {{ nombre_completo }}
+                    </span>
+                </li>
+                <li><a href="/logout" style="color:#ffcdd2;" onclick="return confirm('¿Cerrar sesión?')">🚪 Salir</a></li>
+            </ul>
+        </nav>
+
+        <section class="hero">
+            <h1>ECORuta</h1>
+            <p>
+                Sistema de seguimiento y gestión de unidades recolectoras
+                de basura del municipio de San José del Rincón.
+            </p>
+            {% if rol in ['admin', 'operador'] %}
+            <a href="/unidad" class="boton-principal">Entrar al sistema</a>
+            {% else %}
+            <a href="/enviar_queja" class="boton-principal">Enviar una queja</a>
+            {% endif %}
+        </section>
+    </header>
+
+    <main>
+
+        <section class="seccion">
+            <h2>¿Qué es ECORuta?</h2>
+            <p>
+                ECORuta es un sistema que registra y da seguimiento a las
+                unidades recolectoras de basura que operan dentro del municipio
+                de San José del Rincón, mejorando la planeación de rutas,
+                horarios y comunicación con la ciudadanía.
+            </p>
+            <p>
+                Desarrollado por estudiantes de 4to semestre como parte del
+                Submódulo 2 del ciclo escolar 2025-2026, utilizando MongoDB Atlas.
+            </p>
+        </section>
+
+        <section class="tarjetas-contenedor">
+            <h2>Módulos del sistema</h2>
+
+            <div class="tarjetas">
+
+                {% if rol in ['admin', 'operador'] %}
+                <div class="tarjeta-info">
+                    <h3>🚛 Unidades</h3>
+                    <p>Registra y consulta los camiones recolectores,
+                       sus placas, vigencia y estado de servicio.</p>
+                    <br>
+                    <a href="/unidad" class="boton-principal">Ir a Unidades</a>
+                </div>
+
+                <div class="tarjeta-info">
+                    <h3>👷 Operadores</h3>
+                    <p>Administra los conductores de las unidades,
+                       su contacto y unidad asignada.</p>
+                    <br>
+                    <a href="/agregar_operador" class="boton-principal">
+                        Ir a Operadores
+                    </a>
+                </div>
+                {% endif %}
+
+                <div class="tarjeta-info">
+                    <h3>🏘️ Comunidades</h3>
+                    <p>Consulta las zonas donde operan las rutas de
+                       recolección con sus unidades asignadas.</p>
+                    <br>
+                    <a href="/comunidades" class="boton-principal">
+                        Ir a Comunidades
+                    </a>
+                </div>
+
+                <div class="tarjeta-info">
+                    <h3>📋 Quejas</h3>
+                    <p>
+                        {% if rol in ['admin', 'operador'] %}
+                        Revisa y da seguimiento a los reportes ciudadanos
+                        relacionados con el servicio de recolección.
+                        {% else %}
+                        Registra tu reporte si tuviste problemas con el
+                        servicio de recolección en tu colonia.
+                        {% endif %}
+                    </p>
+                    <br>
+                    {% if rol in ['admin', 'operador'] %}
+                    <a href="/ver_quejas" class="boton-principal">
+                        Ver Quejas
+                    </a>
+                    {% else %}
+                    <a href="/enviar_queja" class="boton-principal">
+                        Enviar Queja
+                    </a>
+                    {% endif %}
+                </div>
+
+                <div class="tarjeta-info">
+                    <h3>🗺️ Ver Rutas</h3>
+                    <p>Consulta las rutas y horarios aproximados del
+                       camión recolector de basura.</p>
+                    <br>
+                    <a href="/ver_rutas" class="boton-principal">
+                        Ver Rutas
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>🚛 ECORuta | Sistema de Recolección | San José del Rincón — 2026</p>
+    </footer>
+
+</body>
+</html>

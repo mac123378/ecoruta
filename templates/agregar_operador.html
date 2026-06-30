@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Agregar Operador — ECORuta</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos_ecoruta.css') }}">
+
+</head>
+
+
+<body>
+
+
+
+<header class="encabezado">
+
+
+    <nav class="menu">
+
+
+        <h2>🚛 ECORuta</h2>
+
+
+        <ul>
+
+            <li><a href="/">Inicio</a></li>
+
+            <li><a href="/unidad">Unidades</a></li>
+
+            <li><a href="/agregar_operador">Operadores</a></li>
+
+            <li><a href="/comunidades">Comunidades</a></li>
+
+            <li><a href="/enviar_queja">Quejas</a></li>
+
+        </ul>
+
+
+    </nav>
+
+
+
+
+    <section class="hero">
+
+
+        <h1>👷 Agregar Operador</h1>
+
+
+        <p>
+            Registra un nuevo conductor de unidad recolectora.
+        </p>
+
+
+    </section>
+
+
+
+</header>
+
+
+
+
+
+
+
+<main>
+
+
+<section class="seccion">
+
+
+
+
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+
+
+    {% for category, message in messages %}
+
+
+        <div class="{{ 'alerta-ok' if category == 'success' else 'alerta-error' }}">
+
+
+            {{ message }}
+
+
+        </div>
+
+
+    {% endfor %}
+
+
+{% endwith %}
+
+
+
+
+
+
+
+
+<div class="form-container">
+
+
+<h2>Nuevo operador</h2>
+
+
+
+
+
+<form action="/agregar_operador" method="POST">
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+Nombre completo:
+</label>
+
+
+<input type="text"
+name="nombre"
+required>
+
+
+</div>
+
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+Teléfono:
+</label>
+
+
+<input type="text"
+name="telefono"
+required>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+Unidad asignada:
+</label>
+
+
+<input type="text"
+name="unidad_asignada"
+required>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+Correo electrónico:
+</label>
+
+
+<input type="email"
+name="correo">
+
+
+</div>
+
+
+
+
+
+
+
+<button type="submit" class="form-btn">
+
+
+💾 Agregar operador
+
+
+</button>
+
+
+
+
+
+</form>
+
+
+</div>
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+<div style="text-align:center;">
+
+
+
+
+
+<a href="/ver_operadores" 
+class="boton-principal">
+
+
+📋 Ver todos los operadores
+
+
+</a>
+
+
+
+
+
+<br><br>
+
+
+
+
+
+
+<!-- BOTÓN VOLVER A INICIO -->
+
+
+<a href="/" 
+class="boton-secundario">
+
+
+🏠 Volver a página principal
+
+
+</a>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+</section>
+
+
+
+</main>
+
+
+
+
+
+
+
+
+<footer>
+
+
+<p>
+🚛 ECORuta | San José del Rincón — 2026
+</p>
+
+
+</footer>
+
+
+
+
+
+
+</body>
+
+
+</html>

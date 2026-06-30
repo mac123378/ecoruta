@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Quejas — ECORuta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos_ecoruta.css') }}">
+    <style>
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .badge-pendiente  { background:#fff3e0; color:#e65100; }
+        .badge-recibido   { background:#e3f2fd; color:#1565c0; }
+        .badge-atendido   { background:#e8f5e9; color:#2e7d32; }
+
+        .btns-estado {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-estado {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.2s;
+            border: 2px solid transparent;
+        }
+        .btn-recibido  { background:#e3f2fd; color:#1565c0; border-color:#1565c0; }
+        .btn-pendiente { background:#fff3e0; color:#e65100; border-color:#e65100; }
+        .btn-atendido  { background:#e8f5e9; color:#2e7d32; border-color:#2e7d32; }
+        .btn-estado:hover { opacity: 0.75; transform: translateY(-1px); }
+
+        .foto-evidencia {
+            max-width: 120px;
+            border-radius: 8px;
+            border: 2px solid #c5e1a5;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="encabezado">
+        <nav class="menu">
+            <h2>🚛 ECORuta</h2>
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                {% if rol in ['admin', 'operador'] %}
+                <li><a href="/unidad">Unidades</a></li>
+                <li><a href="/agregar_operador">Operadores</a></li>
+                {% endif %}
+                <li><a href="/comunidades">Comunidades</a></li>
+                <li><a href="/enviar_queja">Quejas</a></li>
+                <li><a href="/logout" style="color:#ffcdd2;" onclick="return confirm('¿Cerrar sesión?')">🚪 Salir</a></li>
+            </ul>
+        </nav>
+        <section class="hero">
+            <h1>📋 Lista de Quejas</h1>
+            <p>Consulta todos los reportes ciudadanos registrados.</p>
+        </section>
+    </header>
+
+    <main>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="{{ 'alerta-ok' if category == 'success' else 'alerta-error' }}"
+                     style="margin: 10px 40px;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <section class="tarjetas-contenedor">
+            <h2>Quejas registradas</h2>
+
+            {% if quejas %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ciudadano</th>
+                        <th>Colonia</th>
+                        <th>Fecha y hora</th>
+                        <th>Descripción</th>
+                        <th>Evidencia</th>
+                        <th>Estado</th>
+                        {% if rol in ['admin', 'operador'] %}<th>Cambiar estado</th>{% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for q in quejas %}
+                    <tr>
+                        <td><strong>{{ q.get('nombre_completo', q.get('usuario', '—')) }}</strong></td>
+                        <td>{{ q.colonia }}</td>
+                        <td>{{ q.fecha_hora }}</td>
+                        <td>{{ q.descripcion }}</td>
+                        <td>
+                            {% if q.get('foto') %}
+                                <img src="{{ q.foto }}" alt="Evidencia"
+                                     class="foto-evidencia"
+                                     onclick="this.style.maxWidth = this.style.maxWidth === '100%' ? '120px' : '100%'">
+                            {% else %}
+                                <span style="color:#aaa; font-size:13px;">Sin foto</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% set estado = q.get('estado', 'pendiente') %}
+                            {% if estado == 'recibido' %}
+                                <span class="badge badge-recibido">📬 Recibido</span>
+                            {% elif estado == 'atendido' %}
+                                <span class="badge badge-atendido">✅ Atendido</span>
+                            {% else %}
+                                <span class="badge badge-pendiente">⏳ Pendiente</span>
+                            {% endif %}
+                        </td>
+                        {% if rol in ['admin', 'operador'] %}
+                        <td>
+                            <div class="btns-estado">
+                                <a href="/cambiar_estado_queja/{{ q['_id'] }}/recibido"
+                                   class="btn-estado btn-recibido">📬 Recibido</a>
+                                <a href="/cambiar_estado_queja/{{ q['_id'] }}/pendiente"
+                                   class="btn-estado btn-pendiente">⏳ Pendiente</a>
+                                <a href="/cambiar_estado_queja/{{ q['_id'] }}/atendido"
+                                   class="btn-estado btn-atendido">✅ Atendido</a>
+                                    <a href="/eliminar_queja/{{ q['_id'] }}"
+           class="btn-estado"
+           style="background:#d32f2f;color:white;border-color:#d32f2f;"
+           onclick="return confirm('¿Deseas eliminar esta queja?');">
+            🗑️ Eliminar
+        </a>
+                            </div>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p>No hay quejas registradas aún.</p>
+            {% endif %}
+
+            <br>
+            {% if rol not in ['admin', 'operador'] %}
+            <a href="/enviar_queja" class="boton-principal">
+                ➕ Enviar nueva queja
+            </a>
+            &nbsp;&nbsp;
+            {% endif %}
+            <a href="/" class="boton-secundario">← Volver al inicio</a>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>🚛 ECORuta | San José del Rincón — 2026</p>
+    </footer>
+
+</body>
+</html>

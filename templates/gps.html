@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<title>GPS ECORuta REAL</title>
+
+<link rel="stylesheet" 
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+}
+
+
+#map{
+height:100vh;
+width:100%;
+}
+
+
+.panel{
+
+position:absolute;
+top:10px;
+left:10px;
+
+background:white;
+
+padding:15px;
+
+border-radius:15px;
+
+z-index:999;
+
+box-shadow:0 0 15px #555;
+
+}
+
+
+button{
+
+padding:8px;
+
+margin:5px;
+
+border:0;
+
+background:#1b5e20;
+
+color:white;
+
+border-radius:8px;
+
+cursor:pointer;
+
+}
+
+
+input{
+
+padding:8px;
+
+width:160px;
+
+}
+
+
+</style>
+
+
+</head>
+
+
+<body>
+
+
+
+<div class="panel">
+
+
+🚛 <b>ECORuta GPS</b>
+
+<br>
+
+
+<span id="estado">
+Buscando ubicación...
+</span>
+
+
+<br><br>
+
+
+<input id="nombre"
+placeholder="Nombre ruta">
+
+
+<br>
+
+
+<input id="horario"
+placeholder="Horario">
+
+
+<br>
+
+
+<button onclick="activarRuta()">
+➕ Agregar ruta
+</button>
+
+
+
+<button onclick="guardarRuta()">
+💾 Guardar
+</button>
+
+
+
+<button onclick="editarHorario()">
+🕒 Editar horario
+</button>
+
+
+
+<br>
+
+
+
+<button onclick="window.location.href='/'" style="background:#1565c0;">
+🏠 Página Principal
+</button>
+
+
+
+</div>
+
+
+
+
+<div id="map"></div>
+
+
+
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+
+
+<script>
+
+
+// MAPA
+
+let map =
+L.map('map')
+.setView(
+[19.823,-100.416],
+14
+);
+
+
+
+L.tileLayer(
+'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+)
+.addTo(map);
+
+
+
+
+// CAMION GPS
+
+let camion =
+L.marker(
+[19.823,-100.416]
+)
+.addTo(map)
+.bindPopup(
+"🚛 Camión en vivo"
+);
+
+
+
+
+
+// RUTA GPS
+
+let rutaGPS =
+L.polyline([],
+{
+color:"green",
+weight:5
+})
+.addTo(map);
+
+
+
+let recorrido=[];
+
+
+
+
+// RUTA MANUAL
+
+let puntos=[];
+
+
+let rutaManual =
+L.polyline([],
+{
+color:"blue",
+weight:6
+})
+.addTo(map);
+
+
+
+let modo=false;
+
+
+
+
+// =====================
+// GPS REAL
+// =====================
+
+
+navigator.geolocation.watchPosition(
+
+(pos)=>{
+
+
+let lat =
+pos.coords.latitude;
+
+
+let lng =
+pos.coords.longitude;
+
+
+
+camion.setLatLng(
+[lat,lng]
+);
+
+
+
+recorrido.push(
+[lat,lng]
+);
+
+
+
+rutaGPS.setLatLngs(
+recorrido
+);
+
+
+
+map.setView(
+[lat,lng]
+);
+
+
+
+document.getElementById("estado")
+.innerHTML =
+"📍 En vivo "+
+lat.toFixed(5)+
+" , "+
+lng.toFixed(5);
+
+
+
+},
+
+
+()=>{
+
+document.getElementById("estado")
+.innerHTML =
+"GPS no disponible";
+
+
+},
+
+
+{
+
+enableHighAccuracy:true
+
+}
+
+);
+
+
+
+
+
+
+
+// =====================
+// CREAR RUTA
+// =====================
+
+
+
+function activarRuta(){
+
+
+modo=true;
+
+
+puntos=[];
+
+
+alert(
+"Selecciona puntos en el mapa"
+);
+
+
+}
+
+
+
+
+
+
+map.on(
+"click",
+(e)=>{
+
+
+if(modo){
+
+
+puntos.push(
+[
+e.latlng.lat,
+e.latlng.lng
+]
+);
+
+
+
+rutaManual.setLatLngs(
+puntos
+);
+
+
+
+}
+
+
+});
+
+
+
+
+
+
+
+
+// =====================
+// GUARDAR RUTA
+// =====================
+
+
+function guardarRuta(){
+
+
+let datos={
+
+
+nombre:
+document.getElementById("nombre").value,
+
+
+horario:
+document.getElementById("horario").value,
+
+
+puntos:puntos
+
+
+
+};
+
+
+
+localStorage.setItem(
+"rutaECORuta",
+JSON.stringify(datos)
+);
+
+
+
+alert(
+"Ruta guardada correctamente"
+);
+
+
+}
+
+
+
+
+
+
+
+// =====================
+// EDITAR HORARIO
+// =====================
+
+
+function editarHorario(){
+
+
+let nuevaHora =
+prompt(
+"Nuevo horario:"
+);
+
+
+
+let datos =
+JSON.parse(
+localStorage.getItem(
+"rutaECORuta"
+)
+);
+
+
+
+if(datos){
+
+
+datos.horario =
+nuevaHora;
+
+
+
+localStorage.setItem(
+"rutaECORuta",
+JSON.stringify(datos)
+);
+
+
+
+alert(
+"Horario actualizado"
+);
+
+
+
+}else{
+
+
+alert(
+"No existe ruta"
+);
+
+
+}
+
+
+}
+
+
+
+
+
+
+// cargar ruta guardada
+
+
+let guardada =
+JSON.parse(
+localStorage.getItem(
+"rutaECORuta"
+)
+);
+
+
+
+if(guardada){
+
+
+L.polyline(
+guardada.puntos,
+{
+color:"blue",
+weight:6
+}
+
+)
+
+.addTo(map)
+
+.bindPopup(
+
+guardada.nombre+
+"<br>"+
+guardada.horario
+
+);
+
+
+}
+
+
+
+</script>
+
+
+
+</body>
+</html>

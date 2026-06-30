@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Rutas tipo Uber — ECORuta</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+        }
+
+        header {
+            background: #1b5e20;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        #map {
+            height: 92vh;
+            width: 100%;
+        }
+
+        .panel {
+            position: absolute;
+            top: 70px;
+            left: 15px;
+            z-index: 999;
+            background: white;
+            padding: 12px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        }
+
+        .btn {
+            display: block;
+            margin-top: 8px;
+            padding: 8px;
+            background: #1976d2;
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: #0d47a1;
+        }
+
+        .btn-red {
+            background: #d32f2f;
+        }
+
+        .btn-red:hover {
+            background: #9a0007;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    🚛 ECORuta — Rutas tipo Uber (San José del Rincón)
+</header>
+<div class="panel">
+
+    <h3>📍 ECORuta</h3>
+
+    <p>Haz clic sobre el mapa para agregar puntos.</p>
+
+    <a class="btn" onclick="guardarRuta()">
+        💾 Guardar Ruta
+    </a>
+
+    <button class="btn" onclick="mostrarFormularioRuta()">
+        ➕ Agregar Ruta
+    </button>
+
+    <button class="btn" onclick="agregarHorario()">
+        🕒 Agregar Horario
+    </button>
+
+    <button class="btn" onclick="editarHorario()">
+        ✏️ Editar Horario
+    </button>
+
+    <a class="btn btn-red" onclick="borrarRuta()">
+        🗑️ Limpiar
+    </a>
+
+   <a class="btn" href="{{ url_for('index') }}">
+    🏠 Página Principal
+</a>
+
+</div>
+</div>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // 📍 CENTRO: SAN JOSÉ DEL RINCÓN
+    var map = L.map('map').setView([19.5206, -100.1496], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    // 🧠 almacenar puntos
+    let puntos = [];
+
+    // 📌 línea tipo Uber
+    let linea = L.polyline([], {color: 'blue'}).addTo(map);
+
+    // 📍 click en mapa
+    map.on('click', function(e) {
+
+        let latlng = [e.latlng.lat, e.latlng.lng];
+
+        puntos.push(latlng);
+
+        // marcador
+        L.marker(latlng).addTo(map)
+            .bindPopup("📍 Punto de ruta");
+
+        // actualizar línea (tipo Uber)
+        linea.setLatLngs(puntos);
+
+    });
+
+    // 💾 guardar (frontend -> backend)
+    function guardarRuta() {
+
+        if (puntos.length < 2) {
+            alert("Debes agregar al menos 2 puntos");
+            return;
+        }
+
+        fetch("/guardar_ruta", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nombre: "Ruta dinámica",
+                comunidad: "San José del Rincón",
+                puntos: puntos
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert("Ruta guardada correctamente 🚛");
+            console.log(data);
+        });
+
+    }
+
+    // 🧹 limpiar mapa
+    function borrarRuta() {
+        puntos = [];
+        linea.setLatLngs([]);
+        location.reload();
+    }
+    // ===============================
+// AGREGAR RUTA
+// ===============================
+
+function mostrarFormularioRuta(){
+
+    let nombre = prompt("Nombre de la nueva ruta");
+
+    if(nombre=="" || nombre==null)
+        return;
+
+    alert("Ruta '" + nombre + "' creada correctamente.");
+
+}
+
+// ===============================
+// HORARIOS
+// ===============================
+
+let horarios=[];
+
+// Agregar horario
+
+function agregarHorario(){
+
+    let salida=prompt("Hora de salida");
+
+    if(!salida) return;
+
+    let llegada=prompt("Hora de llegada");
+
+    if(!llegada) return;
+
+    horarios.push({
+
+        salida:salida,
+
+        llegada:llegada
+
+    });
+
+    alert("Horario agregado correctamente.");
+
+    console.log(horarios);
+
+}
+
+// Editar horario
+
+function editarHorario(){
+
+    if(horarios.length==0){
+
+        alert("No existen horarios.");
+
+        return;
+
+    }
+
+    let indice=prompt(
+        "Número del horario (1-"+horarios.length+")"
+    );
+
+    indice--;
+
+    if(indice<0 || indice>=horarios.length){
+
+        alert("Horario inválido.");
+
+        return;
+
+    }
+
+    let nuevaSalida=prompt(
+        "Nueva hora de salida",
+        horarios[indice].salida
+    );
+
+    let nuevaLlegada=prompt(
+        "Nueva hora de llegada",
+        horarios[indice].llegada
+    );
+
+    horarios[indice].salida=nuevaSalida;
+
+    horarios[indice].llegada=nuevaLlegada;
+
+    alert("Horario actualizado.");
+
+    console.log(horarios);
+
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar Sesión — ECORuta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos_ecoruta.css') }}">
+    <style>
+        .login-wrapper {
+            min-height: 100vh;
+            background: linear-gradient(135deg, rgba(51, 105, 30, 0.93),
+                rgba(85, 139, 47, 0.88)),
+                url("https://images.unsplash.com/photo-1532996122724-e3c354a0b15b");
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .login-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: #c5e1a5;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .login-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 50px 45px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 8px 40px rgba(51, 105, 30, 0.3);
+            border-top: 5px solid #7cb342;
+        }
+
+        .login-card h2 {
+            font-family: 'Playfair Display', serif;
+            color: #33691e;
+            font-size: 26px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: #558b2f;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* Tabs de rol */
+        .tab-selector {
+            display: flex;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #c5e1a5;
+            margin-bottom: 28px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 6px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            color: #558b2f;
+            transition: 0.3s;
+        }
+
+        .tab-btn.active {
+            background-color: #7cb342;
+            color: white;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background-color: #f1f8e9;
+        }
+
+        /* Sub-tabs usuario: Iniciar sesión / Crear cuenta */
+        .subtab-selector {
+            display: flex;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #c5e1a5;
+            margin-bottom: 22px;
+        }
+
+        .subtab-btn {
+            flex: 1;
+            padding: 9px 6px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            color: #558b2f;
+            transition: 0.3s;
+        }
+
+        .subtab-btn.active {
+            background-color: #33691e;
+            color: white;
+        }
+
+        .subtab-btn:hover:not(.active) {
+            background-color: #f1f8e9;
+        }
+
+        .ayuda-codigo {
+            font-size: 12px;
+            color: #7a8f6b;
+            margin-top: -10px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-wrapper">
+
+    <div class="login-logo">🚛 ECORuta</div>
+
+    <div class="login-card">
+        <h2>Iniciar Sesión</h2>
+        <p class="login-subtitle">Sistema de Recolección — San José del Rincón</p>
+
+        <!-- Tabs de rol -->
+        <div class="tab-selector">
+            <button class="tab-btn active" id="tab-admin"
+                onclick="mostrarTab('admin')">
+                🔑 Admin
+            </button>
+            <button class="tab-btn" id="tab-operador"
+                onclick="mostrarTab('operador')">
+                🚛 Operador
+            </button>
+            <button class="tab-btn" id="tab-usuario"
+                onclick="mostrarTab('usuario')">
+                👤 Usuario
+            </button>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="{{ 'alerta-ok' if category == 'success' else 'alerta-error' }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <!-- ===== SECCIÓN ADMIN (con sub-tabs) ===== -->
+        <div id="seccion-admin">
+
+            <!-- Sub-tabs: Iniciar sesión / Crear cuenta -->
+            <div class="subtab-selector">
+                <button class="subtab-btn active" id="subtab-login-admin"
+                    onclick="mostrarSubTabAdmin('login')">
+                    🔓 Iniciar sesión
+                </button>
+                <button class="subtab-btn" id="subtab-registro-admin"
+                    onclick="mostrarSubTabAdmin('registro')">
+                    📝 Crear cuenta
+                </button>
+            </div>
+
+            <!-- Sub-form: Iniciar sesión (admin ya registrado) -->
+            <form id="form-admin" action="/login" method="POST">
+                <input type="hidden" name="tipo" value="admin">
+                <div class="form-group">
+                    <label>Usuario:</label>
+                    <input type="text" name="usuario" placeholder="Ingresa tu usuario" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña:</label>
+                    <input type="password" name="password" placeholder="Ingresa tu contraseña" required>
+                </div>
+                <button type="submit" class="form-btn">
+                    🔓 Entrar como Administrador
+                </button>
+            </form>
+
+            <!-- Sub-form: Crear cuenta de admin (requiere código de invitación) -->
+            <form id="form-registro-admin" action="/login" method="POST" style="display:none;">
+                <input type="hidden" name="tipo" value="registro_admin">
+                <div class="form-group">
+                    <label>Código de invitación:</label>
+                    <input type="text" name="codigo" placeholder="Ej. A1B2-C3D4-E5F6" required>
+                </div>
+                <p class="ayuda-codigo">
+                    Solicita este código a un administrador ya registrado.
+                    Cada código solo puede usarse una vez.
+                </p>
+                <div class="form-group">
+                    <label>Nombre completo:</label>
+                    <input type="text" name="nombre_completo" placeholder="Tu nombre completo" required>
+                </div>
+                <div class="form-group">
+                    <label>Usuario:</label>
+                    <input type="text" name="usuario" placeholder="Elige un nombre de usuario" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña:</label>
+                    <input type="password" name="password" placeholder="Crea tu contraseña" required>
+                </div>
+                <button type="submit" class="form-btn">
+                    📝 Crear cuenta de administrador
+                </button>
+            </form>
+
+        </div><!-- fin seccion-admin -->
+
+        <!-- ===== FORMULARIO OPERADOR ===== -->
+        <form id="form-operador" action="/login" method="POST" style="display:none;">
+            <input type="hidden" name="tipo" value="operador">
+            <div class="form-group">
+                <label>Usuario:</label>
+                <input type="text" name="usuario" placeholder="Ingresa tu usuario" required>
+            </div>
+            <div class="form-group">
+                <label>Contraseña:</label>
+                <input type="password" name="password" placeholder="Ingresa tu contraseña" required>
+            </div>
+            <button type="submit" class="form-btn">
+                🚛 Entrar como Operador
+            </button>
+        </form>
+
+        <!-- ===== SECCIÓN USUARIO (con sub-tabs) ===== -->
+        <div id="seccion-usuario" style="display:none;">
+
+            <!-- Sub-tabs: Iniciar sesión / Crear cuenta -->
+            <div class="subtab-selector">
+                <button class="subtab-btn active" id="subtab-login"
+                    onclick="mostrarSubTab('login')">
+                    🔓 Iniciar sesión
+                </button>
+                <button class="subtab-btn" id="subtab-registro"
+                    onclick="mostrarSubTab('registro')">
+                    📝 Crear cuenta
+                </button>
+            </div>
+
+            <!-- Sub-form: Iniciar sesión (usuario ya registrado) -->
+            <form id="form-login-usuario" action="/login" method="POST">
+                <input type="hidden" name="tipo" value="usuario">
+                <div class="form-group">
+                    <label>Usuario:</label>
+                    <input type="text" name="usuario" placeholder="Tu usuario" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña:</label>
+                    <input type="password" name="password" placeholder="Tu contraseña" required>
+                </div>
+                <button type="submit" class="form-btn">
+                    🔓 Iniciar sesión
+                </button>
+            </form>
+
+            <!-- Sub-form: Crear cuenta (usuario nuevo) -->
+            <form id="form-registro-usuario" action="/login" method="POST" style="display:none;">
+                <input type="hidden" name="tipo" value="usuario">
+                <div class="form-group">
+                    <label>Nombre completo:</label>
+                    <input type="text" name="nombre_completo" placeholder="Tu nombre completo" required>
+                </div>
+                <div class="form-group">
+                    <label>Usuario:</label>
+                    <input type="text" name="usuario" placeholder="Elige un nombre de usuario" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña:</label>
+                    <input type="password" name="password" placeholder="Crea tu contraseña" required>
+                </div>
+                <div class="form-group">
+                    <label>Comunidad:</label>
+                    <select name="comunidad" required>
+                        <option value="" disabled selected>Selecciona tu comunidad</option>
+                        {% for c in comunidades %}
+                            <option value="{{ c.nombre }}">{{ c.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="form-btn">
+                    📝 Crear cuenta y entrar
+                </button>
+            </form>
+
+        </div><!-- fin seccion-usuario -->
+
+    </div>
+</div>
+
+<script>
+    function mostrarTab(tipo) {
+        document.getElementById('seccion-admin').style.display = tipo === 'admin' ? 'block' : 'none';
+        document.getElementById('form-operador').style.display = tipo === 'operador' ? 'block' : 'none';
+        document.getElementById('seccion-usuario').style.display = tipo === 'usuario' ? 'block' : 'none';
+
+        document.getElementById('tab-admin').classList.toggle('active',    tipo === 'admin');
+        document.getElementById('tab-operador').classList.toggle('active', tipo === 'operador');
+        document.getElementById('tab-usuario').classList.toggle('active',  tipo === 'usuario');
+    }
+
+    function mostrarSubTab(subtipo) {
+        document.getElementById('form-login-usuario').style.display    = subtipo === 'login'    ? 'block' : 'none';
+        document.getElementById('form-registro-usuario').style.display = subtipo === 'registro' ? 'block' : 'none';
+
+        document.getElementById('subtab-login').classList.toggle('active',    subtipo === 'login');
+        document.getElementById('subtab-registro').classList.toggle('active', subtipo === 'registro');
+    }
+
+    function mostrarSubTabAdmin(subtipo) {
+        document.getElementById('form-admin').style.display          = subtipo === 'login'    ? 'block' : 'none';
+        document.getElementById('form-registro-admin').style.display = subtipo === 'registro' ? 'block' : 'none';
+
+        document.getElementById('subtab-login-admin').classList.toggle('active',    subtipo === 'login');
+        document.getElementById('subtab-registro-admin').classList.toggle('active', subtipo === 'registro');
+    }
+
+    // Restaurar tab correcto si hubo error de flash
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('tipo') === 'usuario')  mostrarTab('usuario');
+    if (params.get('tipo') === 'operador') mostrarTab('operador');
+    if (params.get('tipo') === 'admin' && params.get('subtipo') === 'registro') {
+        mostrarTab('admin');
+        mostrarSubTabAdmin('registro');
+    }
+</script>
+
+</body>
+</html>

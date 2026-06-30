@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Enviar Queja — ECORuta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos_ecoruta.css') }}">
+</head>
+<body>
+
+    <header class="encabezado">
+        <nav class="menu">
+            <h2>🚛 ECORuta</h2>
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/comunidades">Comunidades</a></li>
+                <li><a href="/enviar_queja">Quejas</a></li>
+                <li><a href="/ver_rutas">Ver Rutas</a></li>
+                <li><a href="/logout" style="color:#ffcdd2;" onclick="return confirm('¿Cerrar sesión?')">🚪 Salir</a></li>
+            </ul>
+        </nav>
+        <section class="hero">
+            <h1>📋 Quejas</h1>
+            <p>Envía tu queja si tuviste problemas con el camión recolector
+               en San José del Rincón.</p>
+        </section>
+    </header>
+
+    <main>
+
+        <section class="seccion">
+            <h2>Formulario de queja</h2>
+
+            <div class="form-container">
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% for category, message in messages %}
+                        <div class="{{ 'alerta-ok' if category == 'success' else 'alerta-error' }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endwith %}
+
+                <!-- El enctype multipart permite enviar la foto -->
+                <form action="/enviar_queja" method="POST" enctype="multipart/form-data">
+
+                    <div class="form-group">
+                        <label>Colonia:</label>
+                        <input type="text" name="colonia" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha y hora del incidente:</label>
+                        <input type="text" name="fecha_hora" id="fecha_hora"
+                               readonly
+                               style="background:#f0f0f0; color:#555; cursor:not-allowed;">
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción de la queja:</label>
+                        <textarea name="descripcion" rows="5" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Foto de evidencia <span style="color:#888; font-weight:400;">(opcional)</span>:</label>
+                        <input type="file" name="foto" accept="image/*"
+                               style="padding:8px; border:2px solid #c5e1a5; border-radius:10px;
+                                      background:#f8fdf4; width:100%; font-family:'Nunito',sans-serif;">
+                    </div>
+
+                    <button type="submit" class="form-btn">
+                        📤 Enviar queja
+                    </button>
+                </form>
+            </div>
+
+            <br>
+            <div style="text-align:center;">
+                <a href="/ver_quejas" class="boton-principal">
+                    Ver todas las quejas
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>🚛 ECORuta | San José del Rincón — 2026</p>
+    </footer>
+
+<script>
+    // Pone la fecha y hora actual automáticamente al cargar la página
+    function setFechaHora() {
+        const ahora = new Date();
+        const formato = ahora.toLocaleString('es-MX', {
+            year: 'numeric', month: '2-digit', day: '2-digit',
+            hour: '2-digit', minute: '2-digit', second: '2-digit',
+            hour12: false
+        });
+        document.getElementById('fecha_hora').value = formato;
+    }
+    setFechaHora();
+    // Actualiza cada segundo
+    setInterval(setFechaHora, 1000);
+</script>
+</body>
+</html>

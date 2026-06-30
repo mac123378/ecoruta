@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Códigos de Invitación — ECORuta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos_ecoruta.css') }}">
+</head>
+<body>
+
+    <header class="encabezado">
+        <nav class="menu">
+            <h2>🚛 ECORuta</h2>
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/unidad">Unidades</a></li>
+                <li><a href="/agregar_operador">Operadores</a></li>
+                <li><a href="/comunidades">Comunidades</a></li>
+                <li><a href="/ver_quejas">Quejas</a></li>
+                <li><a href="/ver_rutas">Ver Rutas</a></li>
+                <li><a href="/horarios">Horarios</a></li>
+                <li><a href="/codigos_invitacion">Códigos Admin</a></li>
+                <li><a href="/logout" style="color:#ffcdd2;" onclick="return confirm('¿Cerrar sesión?')">🚪 Salir</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="seccion">
+            <h2>🔑 Códigos de Invitación para Administradores</h2>
+            <p>
+                Genera códigos únicos de un solo uso para que nuevas personas
+                puedan registrarse como administrador del sistema.
+            </p>
+
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% if mensajes %}
+                    {% for categoria, mensaje in mensajes %}
+                        <p class="mensaje-{{ categoria }}">{{ mensaje }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <a href="/generar_codigo" class="boton-principal">➕ Generar nuevo código</a>
+
+            <div class="tarjeta-info" style="margin-top: 24px;">
+                <table style="width:100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left; padding:8px;">Código</th>
+                            <th style="text-align:left; padding:8px;">Estado</th>
+                            <th style="text-align:left; padding:8px;">Usado por</th>
+                            <th style="text-align:left; padding:8px;">Creado por</th>
+                            <th style="text-align:left; padding:8px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in codigos %}
+                        <tr>
+                            <td style="padding:8px; font-family: monospace; font-weight:bold;">
+                                {{ c.codigo }}
+                            </td>
+                            <td style="padding:8px;">
+                                {% if c.usado %}
+                                    ✅ Usado
+                                {% else %}
+                                    🟢 Disponible
+                                {% endif %}
+                            </td>
+                            <td style="padding:8px;">{{ c.usado_por or "—" }}</td>
+                            <td style="padding:8px;">{{ c.creado_por or "—" }}</td>
+                            <td style="padding:8px;">
+                                <a href="/eliminar_codigo/{{ c._id }}"
+                                   onclick="return confirm('¿Eliminar este código?')">🗑️ Eliminar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                {% if not codigos %}
+                <p>Aún no se ha generado ningún código.</p>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>🚛 ECORuta | Sistema de Recolección | San José del Rincón — 2026</p>
+    </footer>
+
+</body>
+</html>
