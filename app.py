@@ -5,11 +5,15 @@ from bson.objectid import ObjectId
 from bson.errors import InvalidId
 import base64
 import uuid
+import os
 
 app = Flask(__name__)
-app.secret_key = "ecoruta2026"
+app.secret_key = os.environ.get("SECRET_KEY", "ecoruta2026")
 
-uri = "mongodb+srv://dorj090613hmcmdra0_db_user:ecorutamc405@cluster0.dcoib4a.mongodb.net/EcoRuta_405?retryWrites=true&w=majority&appName=Cluster0"
+uri = os.environ.get(
+    "MONGO_URI",
+    "mongodb+srv://dorj090613hmcmdra0_db_user:ecorutamc405@cluster0.dcoib4a.mongodb.net/EcoRuta_405?retryWrites=true&w=majority&appName=Cluster0"
+)
 
 client = MongoClient(
     uri,
@@ -689,4 +693,5 @@ def eliminar_horario(id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)
