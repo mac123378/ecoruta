@@ -19,7 +19,8 @@ client = MongoClient(
     uri,
     tls=True,
     tlsAllowInvalidCertificates=True,
-    serverSelectionTimeoutMS=5000
+    serverSelectionTimeoutMS=20000,
+    connectTimeoutMS=20000
 )
 
 db = client["EcoRuta_405"]
